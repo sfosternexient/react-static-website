@@ -7,7 +7,7 @@
  * This file should be written in ES5.
  */
 
-require('babel-core/register')();
+require('babel-register')();
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
