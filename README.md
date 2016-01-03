@@ -1,4 +1,5 @@
 # react-static-website
+A boilerplate for a static website built with React.
 
 ## Development
 ### Setup

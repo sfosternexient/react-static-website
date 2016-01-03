@@ -21,6 +21,14 @@ var HTMLWebpackPlugin = require('html-webpack-plugin');
 
 const AUTOPREFIXER_CONFIG = '{browsers:["> 1% in AT", "last 2 version", "Firefox ESR"]}';
 
+// Keep this in sync with `src/routes.js`.
+// Blog posts are dynamically added based on `src/articles/index`;
+const BASE_PATHS = [
+  '/',
+  '/home/',
+  '/about/'
+];
+
 /**
  * Shared config
  */
@@ -98,13 +106,9 @@ if (process.env.NODE_ENV === 'development') {
  */
 else if (process.env.NODE_ENV === 'production') {
 
-  var paths = [
-    '/',
-    '/home/',
-    '/about/'
-  ];
 
   // Add blog posts
+  paths = BASE_PATHS.slice();
   const articles = require('./src/articles');
   articles.forEach(article => {
     paths.push('/articles/' + article.slug);

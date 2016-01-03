@@ -14,9 +14,13 @@ export default class Header extends Component {
         <Link to="/">Home</Link>
         <span> - </span>
         <Link to="/about">About</Link>
-        <span> - Articles: </span>
+        <br />
+        <br />
+        <span>Articles: </span>
         {articles.map(article =>
-          <Link key={article.slug} to={`/articles/${article.slug}`}>{article.name} </Link>
+          <div key={article.slug}>
+            <Link to={`/articles/${article.slug}`}>{article.name} </Link>
+          </div>
         )}
       </div>
     );
