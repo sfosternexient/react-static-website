@@ -10,6 +10,7 @@
 require('babel-register')();
 const path = require('path');
 const webpack = require('webpack');
+const glob = require('glob');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
 
@@ -106,9 +107,11 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
   // Add blog posts
   let paths = BASE_PATHS.slice();
-  const articles = require('./src/articles').default;
-  articles.forEach(article => {
-    paths.push('/articles/' + article.slug);
+
+  glob.sync('src/articles/*.js').forEach(file => {
+    let lastSlashI = file.lastIndexOf('/');
+    let name = file.substr(lastSlashI);
+    if (name !== '/index.js') paths.push('/articles' + name.substr(0, name.length - 3));
   });
 
   config.entry = {
@@ -119,7 +122,7 @@ if (process.env.NODE_ENV === 'production') {
     path: path.join(__dirname, 'dist'),
     filename: 'main-[hash].js',
     libraryTarget: 'umd',
-    publicPath: ''
+    publicPath: '/'
   };
 
   config.plugins.push(

@@ -9,6 +9,7 @@ export default class About extends Component {
   render() {
     let {params, model} = this.props;
     let article = model.articles.filter(cur => cur.slug === params.slug)[0];
+
     return (
       <div>
         {article.content}
