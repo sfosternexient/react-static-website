@@ -1,5 +1,4 @@
-/* eslint-disable */
-
+'use strict';
 /**
  * This file contains the webpack config for all environments.
  * Use NODE_ENV to set the environment either to 'production', 'development'
@@ -9,17 +8,14 @@
  */
 
 require('babel-core/register')();
-var path = require('path');
-var webpack = require('webpack');
-var glob = require('glob');
-var deepmerge = require('deepmerge');
-var fs = require('fs');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var StatsWebpackPlugin = require('stats-webpack-plugin');
-var StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
-var HTMLWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const StaticSiteGeneratorPlugin = require('static-site-generator-webpack-plugin');
 
-const AUTOPREFIXER_CONFIG = '{browsers:["> 1% in AT", "last 2 version", "Firefox ESR"]}';
+const SHARED_AUTOPREFIXER_CONFIG = '{browsers:["> 1% in AT", "last 2 version", "Firefox ESR"]}';
+const SHARED_BABEL_PRESETS = ['react', 'es2015'];
+const SHARED_BABEL_PLUGINS = ['transform-class-properties'];
 
 // Keep this in sync with `src/routes.js`.
 // Blog posts are dynamically added based on `src/articles/index`;
@@ -32,7 +28,7 @@ const BASE_PATHS = [
 /**
  * Shared config
  */
-var config = {
+let config = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
@@ -51,12 +47,6 @@ var config = {
   },
   module: {
     loaders: [{
-      test: /\.js$/,
-      loader: 'babel',
-      query: {optional: 'runtime'},
-      exclude: [path.join(__dirname, 'node_modules')],
-      include: path.join(__dirname, 'src')
-    }, {
       test: /.*\.(gif|png|svg|jpe?g)$/i,
       loaders: [
         'url-loader?limit=1024',
@@ -92,7 +82,16 @@ if (process.env.NODE_ENV === 'development') {
 
   config.module.loaders.push({
     test: /\.scss$/,
-    loader: 'style!css!autoprefixer?' + AUTOPREFIXER_CONFIG + '!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+    loader: 'style!css!autoprefixer?' + SHARED_AUTOPREFIXER_CONFIG + '!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+  }, {
+    test: /\.js$/,
+    loader: 'babel',
+    query: {
+      presets: [...SHARED_BABEL_PRESETS, 'react-hmre'],
+      plugins: SHARED_BABEL_PLUGINS
+    },
+    exclude: [path.join(__dirname, 'node_modules')],
+    include: path.join(__dirname, 'src')
   });
 }
 
@@ -104,12 +103,10 @@ if (process.env.NODE_ENV === 'development') {
  * publicPath (see below) and provides a file named webpack-stats.json in
  * the root folder, which can be used to get the names of the generated assets.
  */
-else if (process.env.NODE_ENV === 'production') {
-
-
+if (process.env.NODE_ENV === 'production') {
   // Add blog posts
-  paths = BASE_PATHS.slice();
-  const articles = require('./src/articles');
+  let paths = BASE_PATHS.slice();
+  const articles = require('./src/articles').default;
   articles.forEach(article => {
     paths.push('/articles/' + article.slug);
   });
@@ -134,7 +131,16 @@ else if (process.env.NODE_ENV === 'production') {
 
   config.module.loaders.push({
     test: /\.scss$/,
-    loader: ExtractTextPlugin.extract('style', 'css!autoprefixer?' + AUTOPREFIXER_CONFIG + '!sass')
+    loader: ExtractTextPlugin.extract('style', 'css!autoprefixer?' + SHARED_AUTOPREFIXER_CONFIG + '!sass')
+  }, {
+    test: /\.js$/,
+    loader: 'babel',
+    query: {
+      presets: SHARED_BABEL_PRESETS,
+      plugins: SHARED_BABEL_PLUGINS
+    },
+    exclude: [path.join(__dirname, 'node_modules')],
+    include: path.join(__dirname, 'src')
   });
 }
 

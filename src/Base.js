@@ -15,13 +15,13 @@ export default class Base extends Component {
           <title>react-static-website</title>
           <meta charSet="UTF-8" />
           {assets.styles.map(style =>
-            <link rel="stylesheet" href={style} />
+            <link key={style} rel="stylesheet" href={style} />
           )}
         </head>
         <body>
           <div id="root" dangerouslySetInnerHTML={{__html: html}} />
           {assets.scripts.map(script =>
-            <script src={script} />
+            <script key={script} src={script} />
           )}
         </body>
       </html>

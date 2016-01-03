@@ -16,7 +16,7 @@ if (typeof document !== 'undefined') {
 
 // Exported static site renderer (node.js context)
 export default (locals, callback) => {
-  const Base = require('./Base');
+  const Base = require('./Base').default;
 
   const history = createMemoryHistory();
   const location = history.createLocation(locals.path);
