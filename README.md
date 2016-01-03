@@ -1,6 +1,8 @@
 # react-static-website
 A boilerplate for a static website built with React.
 
+This template is intended to be very basic, making it easy to understand for beginners.
+
 ## Development
 ### Setup
 1. Install node.js.

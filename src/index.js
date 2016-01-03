@@ -23,8 +23,11 @@ export default (locals, callback) => {
 
   match({routes, location}, (error, redirectLocation, renderProps) => {
     let html = ReactDOMServer.renderToString(<RoutingContext {...renderProps} />);
-    let hash = locals.webpackStats.compilation.hash;
 
+    // Currently only one chunk is emitted for the JavaScript and CSS code.
+    // This could be swapped out for something more sophisticated
+    // in the future, if necessary.
+    let hash = locals.webpackStats.compilation.hash;
     let assets = {
       scripts: ['/main-' + hash + '.js'],
       styles: ['/main-' + hash + '.css']
